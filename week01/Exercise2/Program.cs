@@ -4,80 +4,30 @@ class Program
 {
     static void Main(string[] args)
     {
-        Console.Write("What is your grade percentage? ");
-        string answer = Console.ReadLine();
+        // Ask the user to set the magic number
+        Console.Write("What is the magic number? ");
+        int magicNumber = int.Parse(Console.ReadLine());
 
-        try
+        int guess = -1; 
+        
+        while (guess != magicNumber)
         {
-            double percent = double.Parse(answer);
+            // Ask the user for their guess
+            Console.Write("What is your guess? ");
+            guess = int.Parse(Console.ReadLine());
 
-            if (percent < 0 || percent > 100)
+            if (guess < magicNumber)
             {
-                Console.WriteLine("Please enter a grade between 0 and 100.");
-                return;
+                Console.WriteLine("Higher");
             }
-
-            string letter = "";
-            string sign = "";
-
-            if (percent >= 90)
+            else if (guess > magicNumber)
             {
-                letter = "A";
-            }
-            else if (percent >= 80)
-            {
-                letter = "B";
-            }
-            else if (percent >= 70)
-            {
-                letter = "C";
-            }
-            else if (percent >= 60)
-            {
-                letter = "D";
+                Console.WriteLine("Lower");
             }
             else
             {
-                letter = "F";
+                Console.WriteLine("You guessed it!");
             }
-
-            int lastDigit = (int)percent % 10;
-            if (lastDigit >= 7)
-            {
-                sign = "+";
-            }
-            else if (lastDigit < 3)
-            {
-                sign = "-";
-            }
-            
-            if (letter == "A" && sign == "+")
-            {
-                sign = "";
-            }
-            if (letter == "F")
-            {
-                sign = "";
-            }
-
-            
-            Console.WriteLine($"Your grade is: {letter}{sign}");
-
-            if (percent >= 70)
-            {
-                Console.WriteLine("Congratulations, you passed the course!");
-            }
-            else
-            {
-                Console.WriteLine("Better luck next time!");
-            }
-        }
-        catch (FormatException)
-        {
-            Console.WriteLine("Invalid input. Please enter a valid number.");
         }
     }
 }
-
-
-
