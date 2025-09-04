@@ -1,88 +1,78 @@
 using System;
-using System.Collections.Generic;
 
 class Program
 {
     static void Main(string[] args)
     {
-        List<int> numbers = new List<int>();
-        int userNumber = -1;
+        // Prompt user for grade percentage
+        Console.Write("Enter your grade percentage: ");
+        string input = Console.ReadLine();
+        int percent = int.Parse(input);
 
-        
-        Console.WriteLine("Enter a list of numbers, type 0 when finished.");
+        string letter = "";
+        string sign = "";
 
-        // Collect numbers until user enters 0
-        while (userNumber != 0)
+        // Determine the letter grade
+        if (percent >= 90)
         {
-            Console.Write("Enter number: ");
-            string userResponse = Console.ReadLine();
-
-            if (int.TryParse(userResponse, out userNumber))
-            {
-                if (userNumber != 0)
-                {
-                    numbers.Add(userNumber);
-                }
-            }
-            else
-            {
-                Console.WriteLine("Please enter a valid integer.");
-            }
+            letter = "A";
         }
-
-        if (numbers.Count > 0)
+        else if (percent >= 80)
         {
-            int sum = 0;
-            foreach (int n in numbers)
-            {
-                sum += n;
-            }
-            Console.WriteLine($"The sum is: {sum}");
-
-            float average = (float)sum / numbers.Count;
-            Console.WriteLine($"The average is: {average}");
-
-            int max = numbers[0];
-            foreach (int n in numbers)
-            {
-                if (n > max)
-                {
-                    max = n;
-                }
-            }
-            Console.WriteLine($"The largest number is: {max}");
-
-            int? smallestPositive = null;
-            foreach (int n in numbers)
-            {
-                if (n > 0)
-                {
-                    if (smallestPositive == null || n < smallestPositive)
-                    {
-                        smallestPositive = n;
-                    }
-                }
-            }
-
-            if (smallestPositive != null)
-            {
-                Console.WriteLine($"The smallest positive number is: {smallestPositive}");
-            }
-            else
-            {
-                Console.WriteLine("No positive numbers were entered.");
-            }
-
-            numbers.Sort();
-            Console.WriteLine("The sorted list is:");
-            foreach (int n in numbers)
-            {
-                Console.WriteLine(n);
-            }
+            letter = "B";
+        }
+        else if (percent >= 70)
+        {
+            letter = "C";
+        }
+        else if (percent >= 60)
+        {
+            letter = "D";
         }
         else
         {
-            Console.WriteLine("No numbers were entered.");
+            letter = "F";
+        }
+
+        // Determine the sign (+ or -)
+        int lastDigit = percent % 10;
+
+        if (letter == "A")
+        {
+            // Only A or A- (no A+)
+            if (lastDigit < 3)
+            {
+                sign = "-";
+            }
+        }
+        else if (letter == "F")
+        {
+            // F never has + or -
+            sign = "";
+        }
+        else // B, C, D grades
+        {
+            if (lastDigit >= 7)
+            {
+                sign = "+";
+            }
+            else if (lastDigit < 3)
+            {
+                sign = "-";
+            }
+        }
+
+        // Display the grade with the sign
+        Console.WriteLine($"Your grade is: {letter}{sign}");
+
+        // Check if the user passed the course
+        if (percent >= 70)
+        {
+            Console.WriteLine("Congratulations! You passed the course.");
+        }
+        else
+        {
+            Console.WriteLine("Better luck next time! Keep trying and don’t give up.");
         }
     }
 }
