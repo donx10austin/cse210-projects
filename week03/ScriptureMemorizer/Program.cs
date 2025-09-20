@@ -1,121 +1,60 @@
 using System;
-using System.Collections.Generic;
-using System.IO;
 
-using ScriptureMemorizer;
-
-/*
-=========================================================
-Scripture Memorizer
-=========================================================
-This program helps users memorize scriptures by gradually
-hiding random words until the entire passage is hidden.
-
----------------------------------------------------------
-✅ CORE REQUIREMENTS MET:
----------------------------------------------------------
-• Displays scripture reference and full text
-• Clears the console and updates display each round
-• Prompts the user to press Enter or type "quit"
-• Hides a few random words at a time
-• Stops when the user types "quit"
-• Ends when all words are hidden
-• Uses Encapsulation (Reference, Word, and Scripture classes)
-• Supports both single verses (John 3:16)
-  and verse ranges (Proverbs 3:5-6)
-
----------------------------------------------------------
-🚀 EXCEEDING REQUIREMENTS (100%):
----------------------------------------------------------
-• 📁 Scripture Library from File:
-  - Scriptures are stored in an external file (scriptures.txt)
-  - Each line has: Book|Chapter|Verse/Range|Text
-  - Makes adding new scriptures simple (no code changes needed)
-
-• 🎲 Random Scripture Selection:
-  - On startup, the program chooses a random scripture from the file
-  - Keeps practice fresh and unpredictable for the user
-
-• 🧩 Object-Oriented and Extensible:
-  - Proper encapsulation with private fields and public methods
-  - Reference class has multiple constructors to handle single verses and verse ranges
-  - Separation of responsibilities improves scalability and maintainability
----------------------------------------------------------
-Author: [Your Name]
-Date: [Date]
-=========================================================
-*/
-
-namespace ScriptureMemorizer
+class Program
 {
-    class Program
+    static void Main(string[] args)
     {
-        static void Main(string[] args)
+        // Load scriptures from file
+        ScriptureLibrary library = new ScriptureLibrary("scriptures.txt");
+
+        // Nullable because GetRandomScripture() can return null
+        Scripture? scripture = library.GetRandomScripture();
+
+        if (scripture == null)
         {
-            List<Scripture> library = LoadScriptures("scriptures.txt");
-            if (library.Count == 0)
-            {
-                Console.WriteLine("No scriptures found in scriptures.txt");
-                return;
-            }
-
-            Random rnd = new Random();
-            Scripture chosen = library[rnd.Next(library.Count)];
-
-            while (!chosen.AllHidden())
-            {
-                Console.Clear();
-                Console.WriteLine(chosen.GetReference());
-                Console.WriteLine(chosen.GetDisplayText());
-
-                Console.WriteLine("\nPress Enter to hide words or type 'quit' to stop:");
-                string input = Console.ReadLine();
-
-                if (input.ToLower() == "quit")
-                    return;
-
-                chosen.HideRandomWords(3);
-            }
-
-            // Final display
-            Console.Clear();
-            Console.WriteLine(chosen.GetReference());
-            Console.WriteLine(chosen.GetDisplayText());
-            Console.WriteLine("\n--- Scripture fully hidden ---");
+            Console.WriteLine("No scripture could be loaded. Please check scriptures.txt.");
+            return;
         }
 
-        static List<Scripture> LoadScriptures(string filename)
+        while (true)
         {
-            var scriptures = new List<Scripture>();
-            if (!File.Exists(filename))
-                return scriptures;
+            Console.Clear();
+            Console.WriteLine(scripture.GetDisplayText());
+            Console.WriteLine("\nPress Enter to hide words, type 'reveal' to reveal one, or type 'quit' to exit.");
+            string? input = Console.ReadLine();
 
-            foreach (var line in File.ReadAllLines(filename))
+            if (input == "quit")
+                break;
+            else if (input == "reveal")
+                scripture.RevealOneWord();
+            else
+                scripture.HideRandomWords(3);
+
+            if (scripture.IsCompletelyHidden())
             {
-                if (string.IsNullOrWhiteSpace(line)) continue;
-
-                string[] parts = line.Split('|');
-                if (parts.Length < 4) continue;
-
-                string book = parts[0];
-                int chapter = int.Parse(parts[1]);
-                string versePart = parts[2];
-                string text = parts[3];
-
-                Reference reference;
-                if (versePart.Contains("-"))
-                {
-                    var verses = versePart.Split('-');
-                    reference = new Reference(book, chapter, int.Parse(verses[0]), int.Parse(verses[1]));
-                }
-                else
-                {
-                    reference = new Reference(book, chapter, int.Parse(versePart));
-                }
-
-                scriptures.Add(new Scripture(reference, text));
+                Console.Clear();
+                Console.WriteLine(scripture.GetDisplayText());
+                Console.WriteLine("\nAll words are hidden. Program will end.");
+                break;
             }
-            return scriptures;
         }
     }
 }
+
+/*
+=========================================================
+Report: Exceeding Requirements
+=========================================================
+1. Supports a library of scriptures stored in a file (scriptures.txt).
+2. Random scripture is chosen each run.
+3. User can reveal a hidden word with the "reveal" command.
+4. Handles verse ranges like Proverbs 3:5-6.
+5. Uses encapsulation and OOP design with 5 classes:
+   - Program
+   - Scripture
+   - Reference
+   - Word
+   - ScriptureLibrary
+6. Clean error handling when no scriptures are loaded.
+=========================================================
+*/
