@@ -7,4 +7,9 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <!-- This makes sure scriptures.txt is copied into bin/Debug/net8.0 automatically -->
+  <ItemGroup>
+    <None Include="scriptures.txt" CopyToOutputDirectory="Always" />
+  </ItemGroup>
+
 </Project>

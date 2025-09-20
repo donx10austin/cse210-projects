@@ -14,13 +14,16 @@ public class ScriptureLibrary
 
     private void LoadFromFile(string filePath)
     {
-        if (!File.Exists(filePath))
+        // Always load relative to the build folder (bin/Debug/net8.0/)
+        string fullPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, filePath);
+
+        if (!File.Exists(fullPath))
         {
-            Console.WriteLine($"File not found: {filePath}");
+            Console.WriteLine($"File not found: {fullPath}");
             return;
         }
 
-        string[] lines = File.ReadAllLines(filePath);
+        string[] lines = File.ReadAllLines(fullPath);
 
         foreach (string line in lines)
         {
